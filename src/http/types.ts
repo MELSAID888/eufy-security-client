@@ -83,7 +83,7 @@ export enum DeviceType {
     WALL_LIGHT_CAM_81A0 = 10005,
     INDOOR_PT_CAMERA_C220 = 10008, // T8W11C
     INDOOR_PT_CAMERA_C210 = 10009, // T8419 / T8W11P?
-    SOLO_CAMERA_C35 = 10035 //TB110T
+    CAMERA_C35 = 10035 //TB110T
 }
 
 export enum ParamType {
@@ -8076,8 +8076,11 @@ export const DeviceProperties: Properties = {
         [PropertyName.DeviceLeftBehindAlarm]: DeviceLeftBehindAlarmProperty,
         [PropertyName.DeviceFindPhone]: DeviceFindPhoneProperty,
     },
-    [DeviceType.SOLO_CAMERA_C35]: {
+    [DeviceType.CAMERA_C35]: {
         ...GenericDeviceProperties,
+        [PropertyName.DeviceLight]: DeviceFloodlightLightProperty,
+        [PropertyName.DevicePicture]: DevicePictureProperty,
+        [PropertyName.DevicePictureUrl]: DevicePictureUrlProperty,
         [PropertyName.DeviceState]: DeviceStateProperty,
         [PropertyName.DeviceNightvision]: DeviceNightvisionProperty,
         [PropertyName.DeviceChimeIndoor]: DeviceChimeIndoorBatteryDoorbellProperty,
@@ -8096,12 +8099,11 @@ export const DeviceProperties: Properties = {
         [PropertyName.DeviceImageMirrored]: DeviceImageMirroredProperty,
         [PropertyName.DeviceLightSettingsMotionTriggered]: DeviceFloodlightLightSettingsMotionTriggeredProperty,
         [PropertyName.DeviceDetectionStatisticsRecordedEvents]: DeviceDetectionStatisticsRecordedEventsProperty,
-        //[PropertyName.DeviceStatusLed]: DeviceStatusLedProperty,
+        [PropertyName.DeviceStatusLed]: DeviceStatusLedProperty,
         [PropertyName.DevicePowerSource]: DevicePowerSourceProperty,
         [PropertyName.DeviceNotificationRing]: DeviceNotificationRingProperty,
         [PropertyName.DeviceContinuousRecordingType]: DeviceContinuousRecordingTypeProperty,
-        [PropertyName.DeviceLight]: DeviceFloodlightLightProperty,
-        [PropertyName.DeviceLightSettingsBrightnessManual]: DeviceFloodlightLightSettingsBrightnessManualProperty,
+       // [PropertyName.DeviceLightSettingsEnable]: DeviceFloodlightLightSettingsEnableProperty,        [PropertyName.DeviceLightSettingsBrightnessManual]: DeviceFloodlightLightSettingsBrightnessManualProperty,
         [PropertyName.DeviceMotionDetectionTypeHuman]: DeviceMotionHB3DetectionTypeHumanProperty,
         [PropertyName.DeviceMotionDetectionTypeVehicle]: DeviceMotionHB3DetectionTypeVehicleProperty,
         [PropertyName.DeviceMotionDetectionTypeAllOtherMotions]: DeviceMotionHB3DetectionTypeAllOtherMotionsProperty,
@@ -8135,11 +8137,11 @@ export const DeviceProperties: Properties = {
         [PropertyName.DeviceWifiRSSI]: DeviceWifiRSSIProperty,
         [PropertyName.DeviceRecordingRetriggerInterval]: DeviceRecordingRetriggerIntervalProperty,
         //[PropertyName.DeviceNotificationType]: DeviceNotificationTypeProperty,
-        [PropertyName.DeviceStatusLed]: DeviceStatusLedBatteryDoorbellProperty,
+        //[PropertyName.DeviceStatusLed]: DeviceStatusLedBatteryDoorbellProperty,
         [PropertyName.DeviceMotionDetectionSensitivity]: DeviceMotionDetectionSensitivityCamera2Property,
         [PropertyName.DeviceChimeHomebaseRingtoneType]: DeviceChimeHomebaseRingtoneTypeBatteryDoorbellProperty,
-        [PropertyName.DevicePicture]: DevicePictureProperty,
-        [PropertyName.DevicePictureUrl]: DevicePictureUrlProperty,
+        [PropertyName.DevicePersonName]: DevicePersonNameProperty,
+
 
     },
 }
@@ -9206,6 +9208,21 @@ export const StationProperties: Properties = {
         [PropertyName.StationAlarm]: StationAlarmProperty,
         [PropertyName.StationAlarmType]: StationAlarmTypeProperty,
     },
+    [DeviceType.CAMERA_C35]: {
+        ...BaseStationProperties,
+        [PropertyName.StationLANIpAddress]: StationLanIpAddressStandaloneProperty,
+        [PropertyName.StationMacAddress]: StationMacAddressProperty,
+        [PropertyName.StationGuardMode]: StationGuardModeProperty,
+        [PropertyName.StationCurrentMode]: StationCurrentModeProperty,
+        [PropertyName.StationTimeFormat]: StationTimeFormatProperty,
+        [PropertyName.StationAlarm]: StationAlarmProperty,
+        [PropertyName.StationAlarmType]: StationAlarmTypeProperty,
+        [PropertyName.StationNotificationSwitchModeSchedule]: StationNotificationSwitchModeScheduleProperty,
+        [PropertyName.StationNotificationSwitchModeApp]: StationNotificationSwitchModeAppProperty,
+        [PropertyName.StationSdStatus]: StationSdStatusProperty,
+        [PropertyName.StationSdCapacity]: StationSdCapacityProperty,
+        [PropertyName.StationSdCapacityAvailable]: StationSdAvailableCapacityProperty,
+    },
 }
 
 export enum CommandName {
@@ -9869,6 +9886,15 @@ export const DeviceCommands: Commands = {
         CommandName.DeviceStopTalkback,
         CommandName.DeviceOpen,
     ],
+    [DeviceType.CAMERA_C35]: [
+        CommandName.DeviceStartLivestream,
+        CommandName.DeviceStopLivestream,
+        CommandName.DeviceStartDownload,
+        CommandName.DeviceCancelDownload,
+        CommandName.DeviceStartTalkback,
+        CommandName.DeviceStopTalkback,
+        CommandName.DeviceSnooze,
+    ],
 }
 
 export const StationCommands: Commands = {
@@ -10228,5 +10254,14 @@ export const StationCommands: Commands = {
     [DeviceType.SMART_TRACK_CARD]: [],
     [DeviceType.SMART_TRACK_LINK]: [],
     [DeviceType.SMART_DROP]: [
+    ],
+    [DeviceType.CAMERA_C35]: [
+        CommandName.StationReboot,
+        CommandName.StationTriggerAlarmSound,
+        CommandName.StationDownloadImage,
+        CommandName.StationDatabaseQueryLatestInfo,
+        CommandName.StationDatabaseQueryLocal,
+        CommandName.StationDatabaseCountByDate,
+        CommandName.StationDatabaseDelete,
     ],
 }
