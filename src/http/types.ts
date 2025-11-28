@@ -83,7 +83,7 @@ export enum DeviceType {
     WALL_LIGHT_CAM_81A0 = 10005,
     INDOOR_PT_CAMERA_C220 = 10008, // T8W11C
     INDOOR_PT_CAMERA_C210 = 10009, // T8419 / T8W11P?
-    CAMERA_C35 = 10035 //TB110T
+    CAMERA_C35 = 10035 //T8110
 }
 
 export enum ParamType {
@@ -1020,7 +1020,7 @@ export const GenericTypeProperty: PropertyMetadataNumeric = {
         180: "Smart Lock C210 (T8502)",
         184: "Smart Lock C220 (T8506)",
         10005: "Solar Wall Light Cam S120 (T81A0)",
-        10035: "Solo Camera C35 (TB110T)",
+        10035: "eufyCam C35 (T8110)",
     },
 }
 
