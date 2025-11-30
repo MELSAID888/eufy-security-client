@@ -31,7 +31,6 @@ export const generateSerialnumber = function(length: number): string {
 
 export const md5 = (contents: string): string => crypto.createHash("md5").update(contents).digest("hex");
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const handleUpdate = function(config: EufySecurityPersistentData, oldVersion: number): EufySecurityPersistentData {
     if (oldVersion <= 1.24) {
         config.cloud_token = "";
@@ -121,7 +120,7 @@ export const parseValue = function(metadata: PropertyMetadataAny, value: unknown
     return value;
 };
 
-export const parseJSON = function(data: string, log: Category): any {
+export const parseJSON = function(data: string, log: Category): T | undefined {
     try {
         return JSON.parse(data.replace(/[\0]+$/g, ""));
     } catch(err) {
@@ -182,7 +181,6 @@ export const mergeDeep = function (target: Record<string, any> | undefined,	sour
 export function waitForEvent<T>(emitter: EventEmitter, event: string): Promise<T> {
     return new Promise((resolve, reject) => {
         const success = (val: T): void => {
-            // eslint-disable-next-line @typescript-eslint/no-use-before-define
             emitter.off("error", fail);
             resolve(val);
         };
@@ -216,7 +214,7 @@ export function isValidUrl(value: string, protocols: Array<string> = ["http", "h
                 ? protocols.map(protocol => `${protocol.toLowerCase()}:`).includes(url.protocol)
                 : false
             : true;
-    } catch (err) {
+    } catch (_) {
         return false;
     }
 };

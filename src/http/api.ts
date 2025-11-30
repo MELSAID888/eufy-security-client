@@ -1,4 +1,4 @@
-import type { Got, OptionsOfBufferResponseBody, OptionsOfJSONResponseBody, OptionsOfTextResponseBody, OptionsOfUnknownResponseBody } from "got" with {
+import type { Got, OptionsOfBufferResponseBody, OptionsOfJSONResponseBody, OptionsOfTextResponseBody } from "got" with {
     "resolution-mode": "import"
 };
 import type { AnyFunction, ThrottledFunction } from "p-throttle" with {
@@ -10,7 +10,30 @@ import { isValid as isValidLanguage } from "@cospired/i18n-iso-languages";
 import { createECDH, ECDH } from "crypto";
 import * as schedule from "node-schedule";
 
-import { ResultResponse, LoginResultResponse, TrustDevice, Cipher, Voice, EventRecordResponse, Invite, ConfirmInvite, SensorHistoryEntry, ApiResponse, CaptchaResponse, LoginRequest, HouseDetail, DeviceListResponse, StationListResponse, HouseInviteListResponse, HouseListResponse, PassportProfileResponse, UsersResponse, User, AddUserResponse } from "./models"
+import {
+    ResultResponse,
+    LoginResultResponse,
+    TrustDevice,
+    Cipher,
+    Voice,
+    EventRecordResponse,
+    Invite,
+    ConfirmInvite,
+    SensorHistoryEntry,
+    ApiResponse,
+    CaptchaResponse,
+    LoginRequest,
+    HouseDetail,
+    DeviceListResponse,
+    StationListResponse,
+    HouseInviteListResponse,
+    HouseListResponse,
+    PassportProfileResponse,
+    UsersResponse,
+    User,
+    AddUserResponse,
+    Parameter
+} from "./models"
 import { HTTPApiEvents, Ciphers, FullDevices, Hubs, Voices, Invites, HTTPApiRequest, HTTPApiPersistentData, Houses, LoginOptions, Schedule } from "./interfaces";
 import { EventFilterType, PublicKeyType, ResponseErrorCode, StorageType, UserPasswordType, VerfyCodeTypes } from "./types";
 import { ParameterHelper } from "./parameter";
@@ -226,7 +249,7 @@ export class HTTPApi extends TypedEmitter<HTTPApiEvents> {
                     }
                 ],
                 beforeRequest: [
-                    async _options => {
+                    async () => {
                         await this.throttle(async () => { return; })();
                     }
                 ]
@@ -640,7 +663,6 @@ export class HTTPApi extends TypedEmitter<HTTPApiEvents> {
         await this.refreshDeviceData();
     }
 
-    // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
     public async request(request: HTTPApiRequest, withoutUrlPrefix = false): Promise<ApiResponse> {
         rootHTTPLogger.debug("Api request", { method: request.method, endpoint: request.endpoint, responseType: request.responseType, token: this.token, data: request.data });
         try {
@@ -757,9 +779,9 @@ export class HTTPApi extends TypedEmitter<HTTPApiEvents> {
         return false;
     }
 
-    public async setParameters(stationSN: string, deviceSN: string, params: { paramType: number; paramValue: any; }[]): Promise<boolean> {
+    public async setParameters(stationSN: string, deviceSN: string, params: { paramType: number; paramValue: string; }[]): Promise<boolean> {
         if (this.connected) {
-            const tmp_params: any[] = []
+            const tmp_params: Parameter[] = []
             params.forEach(param => {
                 tmp_params.push({ param_type: param.paramType, param_value: ParameterHelper.writeValue(param.paramType, param.paramValue) });
             });
@@ -1120,7 +1142,7 @@ export class HTTPApi extends TypedEmitter<HTTPApiEvents> {
         return "";
     }
 
-    public decryptAPIData(data?: string, json = true): any {
+    public decryptAPIData(data?: string, json = true): T | undefined {
         if (data) {
             let decryptedData: Buffer | undefined;
             try {

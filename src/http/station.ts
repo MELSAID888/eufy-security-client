@@ -186,7 +186,6 @@ export class Station extends TypedEmitter<StationEvents> {
         });
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     protected handlePropertyChange(metadata: PropertyMetadataAny, oldValue: PropertyValue, newValue: PropertyValue): void {
         if (metadata.name === PropertyName.StationCurrentMode) {
             //TODO: Finish implementation!
@@ -630,7 +629,7 @@ export class Station extends TypedEmitter<StationEvents> {
                 value: parsedValue,
                 source: "p2p"
             };
-            let deviceSerial = this._getDeviceSerial(channel);
+            const deviceSerial = this._getDeviceSerial(channel);
             if (deviceSerial !== undefined) {
                 this.emit("raw device property changed", deviceSerial, params);
             }
@@ -840,7 +839,7 @@ export class Station extends TypedEmitter<StationEvents> {
         }
 
         if (propertyName !== undefined && this.hasPropertyValue(propertyName) && this.getPropertyValue(propertyName) !== "") {
-            const settings: StationSecuritySettings = (this.getPropertyValue(propertyName) as any) as StationSecuritySettings;
+            const settings: StationSecuritySettings = (this.getPropertyValue(propertyName) as PropertyValue) as StationSecuritySettings;
             try {
                 if (settings.count_down_arm?.channel_list?.length > 0 && settings.count_down_arm?.delay_time > 0) {
                     return settings.count_down_arm.delay_time;
@@ -1730,7 +1729,7 @@ export class Station extends TypedEmitter<StationEvents> {
             device.isIndoorOutdoorCamera1080p() || device.isIndoorOutdoorCamera2k() || device.isCamera3() || device.isCamera3C() || device.isCameraProfessional247() || device.isCamera3Pro()) {
             this.p2pSession.sendCommandWithIntString({
                 commandType: CommandType.CMD_SET_FLOODLIGHT_MANUAL_SWITCH,
-                value: value === true ? 1 : 0,
+                value: value ? 1 : 0,
                 valueSub: device.getChannel(),
                 strValue: this.rawStation.member.admin_user_id,
                 channel: device.getChannel()
@@ -2125,7 +2124,7 @@ export class Station extends TypedEmitter<StationEvents> {
                     return;
                 }
                 const aiDetectionType = device.getRawProperty(device.getPropertyMetadata(propertyData.name).key as number) !== undefined ? device.getRawProperty(device.getPropertyMetadata(propertyData.name).key as number)! : "0";
-                let newAiDetectionType = getT8170DetectionMode(Number.parseInt(aiDetectionType), type as T8170DetectionTypes, value);
+                const newAiDetectionType = getT8170DetectionMode(Number.parseInt(aiDetectionType), type as T8170DetectionTypes, value);
                 this.p2pSession.sendCommandWithStringPayload({
                     commandType: CommandType.CMD_SET_PAYLOAD,
                     value: JSON.stringify({
@@ -2155,7 +2154,7 @@ export class Station extends TypedEmitter<StationEvents> {
                     rootHTTPLogger.error(`The device ${device.getSerial()} accepts only this type of values:`, Object.values(SoloCameraDetectionTypes).filter((value) => typeof value === "number"));
                     return;
                 }
-                let newAiDetectionType = type;
+                const newAiDetectionType = type;
                 if (!value) {
                     newAiDetectionType = type === SoloCameraDetectionTypes.ALL_OTHER_MOTION ? SoloCameraDetectionTypes.HUMAN_DETECTION : SoloCameraDetectionTypes.ALL_OTHER_MOTION;
                 }
@@ -2189,7 +2188,7 @@ export class Station extends TypedEmitter<StationEvents> {
                     return;
                 }
                 const aiDetectionType = device.getRawProperty(device.getPropertyMetadata(propertyData.name).key as number) !== undefined ? device.getRawProperty(device.getPropertyMetadata(propertyData.name).key as number)! : "0";
-                let newAiDetectionType = getIndoorS350DetectionMode(Number.parseInt(aiDetectionType), type as IndoorS350DetectionTypes, value);
+                const newAiDetectionType = getIndoorS350DetectionMode(Number.parseInt(aiDetectionType), type as IndoorS350DetectionTypes, value);
                 this.p2pSession.sendCommandWithStringPayload({
                     commandType: CommandType.CMD_SET_PAYLOAD,
                     value: JSON.stringify({
@@ -4312,6 +4311,7 @@ export class Station extends TypedEmitter<StationEvents> {
                 try {
                     oldvalue = Number.parseInt(rawproperty);
                 } catch(error) {
+                    console.error("Error parsing Hub notifiy mode" + rawproperty,error);
                 }
             }
             const pushMode = switchNotificationMode(oldvalue, mode, value);
@@ -4341,6 +4341,7 @@ export class Station extends TypedEmitter<StationEvents> {
                 try {
                     oldvalue = Number.parseInt(rawproperty);
                 } catch(error) {
+                    console.error("Error parsing Hub notify mode" + rawproperty, error);
                 }
             }
             const pushMode = switchNotificationMode(oldvalue, mode, value);
@@ -4401,6 +4402,7 @@ export class Station extends TypedEmitter<StationEvents> {
             try {
                 pushmode = Number.parseInt(rawproperty);
             } catch(error) {
+                console.error("Error parsing Hub notify mode" + rawproperty, error);
             }
         }
         const property = this.getPropertyMetadata(propertyData.name);
@@ -6418,16 +6420,17 @@ export class Station extends TypedEmitter<StationEvents> {
             case PropertyName.DeviceScramblePasscode:
             case PropertyName.DeviceNotificationUnlocked:
             case PropertyName.DeviceWrongTryProtection:
-                return value as boolean === true ? 1 : 0;
+                return value as boolean ? 1 : 0;
             case PropertyName.DeviceWrongTryLockdownTime:
             case PropertyName.DeviceSound:
             case PropertyName.DeviceWrongTryAttempts:
             case PropertyName.DeviceAutoLockTimer:
                 return value as number;
             case PropertyName.DeviceAutoLockScheduleEndTime:
-            case PropertyName.DeviceAutoLockScheduleStartTime:
+            case PropertyName.DeviceAutoLockScheduleStartTime: {
                 const autoLockSchedule = (value as string).split(":");
                 return `${Number.parseInt(autoLockSchedule[0]).toString(16).padStart(2, "0")}${Number.parseInt(autoLockSchedule[1]).toString(16).padStart(2, "0")}`;
+            }
         }
         return "";
     }
@@ -6450,9 +6453,10 @@ export class Station extends TypedEmitter<StationEvents> {
             case PropertyName.DeviceNightvisionOptimizationSide:
                 return value as number;
             case PropertyName.DeviceAutoLockScheduleEndTime:
-            case PropertyName.DeviceAutoLockScheduleStartTime:
+            case PropertyName.DeviceAutoLockScheduleStartTime: {
                 const autoLockSchedule = (value as string).split(":");
                 return `${Number.parseInt(autoLockSchedule[0]).toString(16).padStart(2, "0")}${Number.parseInt(autoLockSchedule[1]).toString(16).padStart(2, "0")}`;
+            }
         }
         return "";
     }
@@ -8245,7 +8249,7 @@ export class Station extends TypedEmitter<StationEvents> {
                 case PropertyName.DeviceNotificationDualUnlock:
                 case PropertyName.DeviceNotificationDualLock:
                 case PropertyName.DeviceNotificationWrongTryProtect:
-                case PropertyName.DeviceNotificationJammed:
+                case PropertyName.DeviceNotificationJammed: {
                     const settingsValues: Array<boolean> = [
                         property === PropertyName.DeviceNotificationUnlockByKey ? value as boolean : device.getPropertyValue(PropertyName.DeviceNotificationUnlockByKey) as boolean,
                         property === PropertyName.DeviceNotificationUnlockByPIN ? value as boolean : device.getPropertyValue(PropertyName.DeviceNotificationUnlockByPIN) as boolean,
@@ -8270,6 +8274,7 @@ export class Station extends TypedEmitter<StationEvents> {
                     );
                     command = SmartSafeCommandCode.SET_PUSH;
                     break;
+                }
                 case PropertyName.DeviceScramblePasscode:
                     payload = SmartSafe.encodeCmdScramblePIN(
                         this.rawStation.member.admin_user_id,
@@ -9272,7 +9277,7 @@ export class Station extends TypedEmitter<StationEvents> {
                 commandType: CommandType.CMD_DOORBELL_SET_PAYLOAD,
                 value: JSON.stringify({
                     "commandType": CommandType.CMD_WALL_LIGHT_NOTIFICATION,
-                    "data": value === true ? 1 : 0,
+                    "data": value ? 1 : 0,
                 }),
                 channel: device.getChannel()
             }, {
@@ -9285,6 +9290,7 @@ export class Station extends TypedEmitter<StationEvents> {
                 try {
                     oldvalue = Number.parseInt(rawproperty);
                 } catch(error) {
+                    console.error("Failed to parse Doorlock set push mode", +rawproperty, error);
                 }
             }
             const notification = switchSmartLockNotification(oldvalue, SmartLockNotification.ENABLED, value);
@@ -9332,6 +9338,7 @@ export class Station extends TypedEmitter<StationEvents> {
                 try {
                     oldvalue = Number.parseInt(rawproperty);
                 } catch(error) {
+                    console.error("Failed to parse doorlock set push mode "+ rawproperty, error);
                 }
             }
             const notification = switchSmartLockNotification(oldvalue, SmartLockNotification.LOCKED, value);
@@ -9379,6 +9386,7 @@ export class Station extends TypedEmitter<StationEvents> {
                 try {
                     oldvalue = Number.parseInt(rawproperty);
                 } catch(error) {
+                    console.error("Failed to parse doorlock set push mode "+ rawproperty, error);
                 }
             }
             const notification = switchSmartLockNotification(oldvalue, SmartLockNotification.UNLOCKED, value);
@@ -11120,7 +11128,6 @@ export class Station extends TypedEmitter<StationEvents> {
         }
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     private onSequenceError(channel: number, command: number, sequence: number, serialnumber: string): void {
         //TODO: Implement command retry for lock devices in case von sequence mismatch error
         rootHTTPLogger.debug(`Station lock sequence error`, { stationSN: this.getSerial(), channel: channel, command: command, sequence: sequence, serialnumber: serialnumber });
