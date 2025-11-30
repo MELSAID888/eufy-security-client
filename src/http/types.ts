@@ -8145,6 +8145,8 @@ export const DeviceProperties: Properties = {
         [PropertyName.DevicePersonName]: DevicePersonNameProperty,
         [PropertyName.DeviceLightSettingsBrightnessMotion]: DeviceFloodlightLightSettingsBrightnessMotionProperty,
         [PropertyName.DeviceLightSettingsBrightnessManual]: DeviceFloodlightLightSettingsBrightnessManualProperty,
+        [PropertyName.DevicePersonDetected]: DevicePersonDetectedProperty,
+        [PropertyName.DeviceMotionDetected]: DeviceMotionDetectedProperty,
     },
 }
 
