@@ -55,10 +55,8 @@ export class Device extends TypedEmitter<DeviceEvents> {
 
     public update(device: DeviceListResponse): void {
         this.rawDevice = device;
-
         const metadata = this.getPropertiesMetadata(true);
         for (const property of Object.values(metadata)) {
-
             if (this.rawDevice[property.key] !== undefined && typeof property.key === "string") {
                 if (property.key === "cover_path" && !this.getPropertyValue(property.name) && this.rawDevice[property.key] !== "") {
                     // First image initialisation if no image has been set yet and a cloud value is available
@@ -83,7 +81,6 @@ export class Device extends TypedEmitter<DeviceEvents> {
             || this.properties[name] === undefined || force) {
             const oldValue = this.properties[name];
             this.properties[name] = value;
-
             this.emit("property changed", this, name, value, this.ready);
             try {
                 this.handlePropertyChange(this.getPropertyMetadata(name, true), oldValue, this.properties[name]);
@@ -1036,7 +1033,6 @@ export class Device extends TypedEmitter<DeviceEvents> {
             type == DeviceType.INDOOR_PT_CAMERA_C210 ||
             type == DeviceType.INDOOR_PT_CAMERA_C220 ||
             type == DeviceType.SMART_DROP;
-
     }
 
     static hasBattery(type: number): boolean {
@@ -1081,7 +1077,6 @@ export class Device extends TypedEmitter<DeviceEvents> {
             type == DeviceType.WALL_LIGHT_CAM_81A0 ||
             type == DeviceType.SMART_DROP ||
             type == DeviceType.OUTDOOR_PT_CAMERA;
-
     }
 
     static isStation(type: number): boolean {
@@ -1503,8 +1498,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
             sn.startsWith("T8123") ||
             sn.startsWith("T8124") ||
             sn.startsWith("T8171") ||
-            sn.startsWith("T8134")
-
+            sn.startsWith("T8134");
     }
 
     static isSmartDropBySn(sn: string): boolean {
