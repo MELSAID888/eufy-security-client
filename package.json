@@ -16,6 +16,7 @@
     "build:ts": "tsc -p tsconfig.build.json && npm run copy-proto-build",
     "copy-proto-build": "npx copyfiles -u 1 \"src/**/*.proto\" \"src/**/*.crt\" build",
     "test": "echo \"Error: no test specified\" && exit 1",
+    "test:login": "ts-node examples/test-login.ts",
     "build": "npm run build:ts",
     "watch:ts": "tsc -p tsconfig.build.json --watch",
     "watch": "npm run watch:ts",
@@ -73,7 +74,9 @@
     "@typescript-eslint/eslint-plugin": "^7.5.0",
     "@typescript-eslint/parser": "^7.5.0",
     "eslint": "^8.57.0",
-    "typescript": "^5.5.4"
+    "typescript": "^5.5.4",
+    "dotenv": "^16.4.5",
+    "ts-node": "^10.9.2"
   },
   "bugs": {
     "url": "https://github.com/bropat/eufy-security-client/issues"
