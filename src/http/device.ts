@@ -2124,6 +2124,7 @@ export class Camera extends Device {
     }
 
     public processPushNotification(station: Station, message: PushMessage, eventDurationSeconds: number): void {
+        rootHTTPLogger.info(`IndoorCamera process push notification`, { deviceSN: this.getSerial(), msg_type: message.msg_type, event_type: message.event_type });
         super.processPushNotification(station, message, eventDurationSeconds);
         if (message.type !== undefined && message.event_type !== undefined) {
             if (message.event_type === CusPushEvent.SECURITY && message.device_sn === this.getSerial()) {
@@ -2152,9 +2153,11 @@ export class Camera extends Device {
                     rootHTTPLogger.debug(`Camera process push notification - CusPushEvent.SECURITY - Error`, { error: getError(error), deviceSN: this.getSerial(), message: JSON.stringify(message), eventDurationSeconds: eventDurationSeconds });
                 }
             } else if (message.msg_type === DeviceType.HB3) {
+                rootHTTPLogger.debug(`Camera process push notification - HB3 message detected`, { deviceSN: this.getSerial(), messageSN: message.device_sn });
                 if (message.device_sn === this.getSerial()) {
                     try {
                         loadEventImage(station, this.api, this, message, this.pictureEventTimeouts);
+                        rootHTTPLogger.debug(`Camera process push notification - HB3 event_type: ${message.event_type}`, { deviceSN: this.getSerial() });
                         switch (message.event_type) {
                             case HB3PairedDevicePushEvent.PRESS_DOORBELL:
                                 this.updateProperty(PropertyName.DeviceRinging, true);
@@ -2173,6 +2176,7 @@ export class Camera extends Device {
                                 }, eventDurationSeconds * 1000));
                                 break;
                             case HB3PairedDevicePushEvent.FACE_DETECTION:
+                                rootHTTPLogger.debug(`Camera process push notification - HB3 FACE_DETECTION hit!`, { deviceSN: this.getSerial() });
                                 this.updateProperty(PropertyName.DevicePersonName, !isEmpty(message.person_name) ? message.person_name! : "Unknown");
                                 this.updateProperty(PropertyName.DevicePersonDetected, true);
                                 this.clearEventTimeout(DeviceEvent.PersonDetected);
@@ -2359,6 +2363,7 @@ export class SoloCamera extends Camera {
     }
 
     public processPushNotification(station: Station, message: PushMessage, eventDurationSeconds: number): void {
+        rootHTTPLogger.info(`IndoorCamera process push notification`, { deviceSN: this.getSerial(), msg_type: message.msg_type, event_type: message.event_type });
         super.processPushNotification(station, message, eventDurationSeconds);
         if (message.type !== undefined && message.event_type !== undefined) { // HB3 check removed
             if (message.device_sn === this.getSerial()) {
@@ -2449,6 +2454,7 @@ export class IndoorCamera extends Camera {
     }
 
     public processPushNotification(station: Station, message: PushMessage, eventDurationSeconds: number): void {
+        rootHTTPLogger.info(`IndoorCamera process push notification`, { deviceSN: this.getSerial(), msg_type: message.msg_type, event_type: message.event_type });
         super.processPushNotification(station, message, eventDurationSeconds);
         if (message.type !== undefined && message.event_type !== undefined) { // HB3 check removed
             if (message.device_sn === this.getSerial()) {
@@ -2607,6 +2613,7 @@ export class DoorbellCamera extends Camera {
     }
 
     public processPushNotification(station: Station, message: PushMessage, eventDurationSeconds: number): void {
+        rootHTTPLogger.info(`IndoorCamera process push notification`, { deviceSN: this.getSerial(), msg_type: message.msg_type, event_type: message.event_type });
         super.processPushNotification(station, message, eventDurationSeconds);
         if (message.type !== undefined && message.event_type !== undefined) { // HB3 check removed
             if (message.device_sn === this.getSerial()) {
@@ -2828,6 +2835,7 @@ export class FloodlightCamera extends Camera {
     }
 
     public processPushNotification(station: Station, message: PushMessage, eventDurationSeconds: number): void {
+        rootHTTPLogger.info(`IndoorCamera process push notification`, { deviceSN: this.getSerial(), msg_type: message.msg_type, event_type: message.event_type });
         super.processPushNotification(station, message, eventDurationSeconds);
         if (message.type !== undefined && message.event_type !== undefined) { // HB3 check removed
             if (message.device_sn === this.getSerial()) {
@@ -2951,6 +2959,7 @@ export class WallLightCam extends Camera {
     }
 
     public processPushNotification(station: Station, message: PushMessage, eventDurationSeconds: number): void {
+        rootHTTPLogger.info(`IndoorCamera process push notification`, { deviceSN: this.getSerial(), msg_type: message.msg_type, event_type: message.event_type });
         super.processPushNotification(station, message, eventDurationSeconds);
         if (message.type !== undefined && message.event_type !== undefined) {
             if (message.device_sn === this.getSerial()) {
@@ -3075,6 +3084,7 @@ export class GarageCamera extends Camera {
     }
 
     public processPushNotification(station: Station, message: PushMessage, eventDurationSeconds: number): void {
+        rootHTTPLogger.info(`IndoorCamera process push notification`, { deviceSN: this.getSerial(), msg_type: message.msg_type, event_type: message.event_type });
         super.processPushNotification(station, message, eventDurationSeconds);
         if (message.type !== undefined && message.event_type !== undefined) {
             if (message.device_sn === this.getSerial()) {
@@ -3156,6 +3166,7 @@ export class EntrySensor extends Sensor {
     }
 
     public processPushNotification(station: Station, message: PushMessage, eventDurationSeconds: number): void {
+        rootHTTPLogger.info(`IndoorCamera process push notification`, { deviceSN: this.getSerial(), msg_type: message.msg_type, event_type: message.event_type });
         super.processPushNotification(station, message, eventDurationSeconds);
         if (message.type !== undefined && message.event_type !== undefined) {
             if (message.event_type === CusPushEvent.DOOR_SENSOR && message.device_sn === this.getSerial()) {
@@ -3235,6 +3246,7 @@ export class MotionSensor extends Sensor {
     }
 
     public processPushNotification(station: Station, message: PushMessage, eventDurationSeconds: number): void {
+        rootHTTPLogger.info(`IndoorCamera process push notification`, { deviceSN: this.getSerial(), msg_type: message.msg_type, event_type: message.event_type });
         super.processPushNotification(station, message, eventDurationSeconds);
         if (message.type !== undefined && message.event_type !== undefined) {
             if (message.event_type === CusPushEvent.MOTION_SENSOR_PIR && message.device_sn === this.getSerial()) {
@@ -3324,6 +3336,7 @@ export class Lock extends Device {
     }
 
     public processPushNotification(station: Station, message: PushMessage, eventDurationSeconds: number): void {
+        rootHTTPLogger.info(`IndoorCamera process push notification`, { deviceSN: this.getSerial(), msg_type: message.msg_type, event_type: message.event_type });
         super.processPushNotification(station, message, eventDurationSeconds);
         if (message.event_type !== undefined) {
             this.processNotification(message.event_type, message.event_time, message.device_sn, message.person_name!, eventDurationSeconds, "push");
@@ -4082,6 +4095,7 @@ export class SmartSafe extends Device {
     }
 
     public processPushNotification(station: Station, message: PushMessage, eventDurationSeconds: number): void {
+        rootHTTPLogger.info(`IndoorCamera process push notification`, { deviceSN: this.getSerial(), msg_type: message.msg_type, event_type: message.event_type });
         super.processPushNotification(station, message, eventDurationSeconds);
         if (message.event_type !== undefined) {
             if (message.station_sn === this.getSerial()) {
@@ -4336,6 +4350,7 @@ export class DoorbellLock extends DoorbellCamera {
     }
 
     public processPushNotification(station: Station, message: PushMessage, eventDurationSeconds: number): void {
+        rootHTTPLogger.info(`IndoorCamera process push notification`, { deviceSN: this.getSerial(), msg_type: message.msg_type, event_type: message.event_type });
         super.processPushNotification(station, message, eventDurationSeconds);
         if (message.event_type !== undefined && message.device_sn === this.getSerial()) {
             try {
@@ -4432,6 +4447,7 @@ export class SmartDrop extends Camera {
     }
 
     public processPushNotification(station: Station, message: PushMessage, eventDurationSeconds: number): void {
+        rootHTTPLogger.info(`IndoorCamera process push notification`, { deviceSN: this.getSerial(), msg_type: message.msg_type, event_type: message.event_type });
         super.processPushNotification(station, message, eventDurationSeconds);
         if (message.type !== undefined && message.event_type !== undefined) {
             if (message.device_sn === this.getSerial()) {
