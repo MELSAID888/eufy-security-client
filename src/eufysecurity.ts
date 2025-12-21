@@ -544,9 +544,9 @@ export class EufySecurity extends TypedEmitter<EufySecurityEvents> {
                         station.on("storage info hb3", (station: Station, channel: number, storageInfo: StorageInfoBodyHB3) => this.onStorageInfoHb3(station, channel, storageInfo));
                         station.on("p2p push message", (station: Station, message: PushMessage) => this.onPushMessage(message));
                         const readyPromise = waitForEvent(station, "ready");
-                        this.addStation(station);
                         station.initialize();
                         await readyPromise;
+                        this.addStation(station);
                     } catch (err) {
                         const error = ensureError(err);
                         rootMainLogger.error("HandleHubs Error", { error: getError(error), stationSN: station.getSerial() });
@@ -709,9 +709,9 @@ export class EufySecurity extends TypedEmitter<EufySecurityEvents> {
                         device.on("lid stuck", (device: Device, state: boolean) => this.onDeviceLidStuck(device, state));
                         device.on("battery fully charged", (device: Device, state: boolean) => this.onDeviceBatteryFullyCharged(device, state));
                         const readyPromise = waitForEvent(device, "ready");
-                        this.addDevice(device);
                         device.initialize();
                         await readyPromise;
+                        this.addDevice(device);
                     } catch (err) {
                         const error = ensureError(err);
                         rootMainLogger.error("HandleDevices Error", { error: getError(error), deviceSN: device.getSerial() });

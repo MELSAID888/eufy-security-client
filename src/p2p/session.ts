@@ -2079,6 +2079,17 @@ export class P2PClientProtocol extends TypedEmitter<P2PClientProtocolEvents> {
                                 if (payload) {
                                     this.emit("storage info hb3", message.channel, payload.body);
                                 }
+                            } else if (json.cmd === CommandType.CMD_P2P_PUSH_NOTIFICATION) {
+                                try {
+                                    const payload = typeof json.payload === "string" ? parseJSON(json.payload, rootP2PLogger) : json.payload;
+                                    rootP2PLogger.debug(`Handle DATA ${P2PDataType[message.dataType]} - CMD_NOTIFY_PAYLOAD - CMD_P2P_PUSH_NOTIFICATION`, { stationSN: this.rawStation.station_sn, payload: payload });
+                                    this.emit("push message", payload as PushMessage);
+                                } catch (err) {
+                                    const error = ensureError(err);
+                                    rootP2PLogger.error(`Handle DATA ${P2PDataType[message.dataType]} - CMD_NOTIFY_PAYLOAD - CMD_P2P_PUSH_NOTIFICATION - Error`, { error: getError(error), stationSN: this.rawStation.station_sn, payload: json.payload });
+                                }
+                            } else if (json.cmd === CommandType.CMD_NOTIFY_PAYLOAD_ZOOM) {
+                                rootP2PLogger.debug(`Handle DATA ${P2PDataType[message.dataType]} - CMD_NOTIFY_PAYLOAD - CMD_NOTIFY_PAYLOAD_ZOOM`, { stationSN: this.rawStation.station_sn, payload: json.payload });
                             } else {
                                 rootP2PLogger.debug(`Handle DATA ${P2PDataType[message.dataType]} - CMD_NOTIFY_PAYLOAD - Not implemented`, { stationSN: this.rawStation.station_sn, commandIdName: CommandType[json.cmd], commandId: json.cmd, message: data.toString() });
                             }
