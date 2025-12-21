@@ -1,6 +1,6 @@
 import { TypedEmitter } from "tiny-typed-emitter";
 import { Readable } from "stream";
-import date = require("date-and-time");
+import date from "date-and-time";
 
 import { HTTPApi } from "./api";
 import { AlarmMode, AlarmTone, NotificationSwitchMode, DeviceType, FloodlightMotionTriggeredDistance, GuardMode, NotificationType, ParamType, PowerSource, PropertyName, StationProperties, TimeFormat, CommandName, StationCommands, StationGuardModeKeyPadProperty, StationCurrentModeKeyPadProperty, StationAutoEndAlarmProperty, StationSwitchModeWithAccessCodeProperty, StationTurnOffAlarmWithButtonProperty, PublicKeyType, MotionDetectionMode, VideoTypeStoreToNAS, HB3DetectionTypes, WalllightNotificationType, DailyLightingType, MotionActivationMode, BaseStationProperties, LightingActiveMode, SourceType, T8170DetectionTypes, IndoorS350NotificationTypes, SoloCameraDetectionTypes, MotionDetectionRangeType, ViewModeType, FloodlightT8425NotificationTypes, PresetPositionType, SmartLockNotification, IndoorS350DetectionTypes } from "./types";
